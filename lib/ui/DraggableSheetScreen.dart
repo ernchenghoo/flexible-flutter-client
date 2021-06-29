@@ -1,0 +1,163 @@
+import 'package:flutter/material.dart';
+import 'package:snapping_sheet/snapping_sheet.dart';
+
+class DraggableSheetScreen extends StatelessWidget {
+  final ScrollController listViewController = new ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SnappingSheet(
+        child: Background(),
+        lockOverflowDrag: true,
+        snappingPositions: [
+          SnappingPosition.factor(
+            positionFactor: 0.5,
+            snappingCurve: Curves.linear,
+            snappingDuration: Duration(milliseconds: 200),
+            grabbingContentOffset: GrabbingContentOffset.top,
+          ),
+          SnappingPosition.factor(
+            grabbingContentOffset: GrabbingContentOffset.bottom,
+            snappingCurve: Curves.linear,
+            snappingDuration: Duration(milliseconds: 200),
+            positionFactor: 1,
+          ),
+        ],
+        grabbing: GrabbingWidget(),
+        grabbingHeight: 75,
+        sheetAbove: null,
+        sheetBelow: SnappingSheetContent(
+          draggable: true,
+          childScrollController: listViewController,
+          child: Container(
+            color: Colors.white,
+            child: ListView.builder(
+              controller: listViewController,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.all(15),
+                  color: Colors.green[200],
+                  height: 100,
+                  child: Center(
+                    child: Text(index.toString()),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Background extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/bg_image.jpg"),
+          fit: BoxFit.cover
+        ),
+      ),
+      child: Container(
+        margin: EdgeInsets.only(top: 200),
+        child: Text("Welcome!",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 32,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class GrabbingWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(blurRadius: 25, color: Colors.black.withOpacity(0.2)),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 20),
+            width: 100,
+            height: 7,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+          Container(
+            color: Colors.grey[200],
+            height: 2,
+            margin: EdgeInsets.all(15).copyWith(top: 0, bottom: 0),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SnappingSheetExampleApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Snapping Sheet Examples',
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.grey[700],
+          elevation: 0,
+          foregroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        primarySwatch: Colors.grey,
+      ),
+      home: PageWrapper(),
+    );
+  }
+}
+
+class PageWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Example",
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return Text("menu");
+                }),
+              ),
+            },
+          )
+        ],
+      ),
+      body: Text("hi"),
+    );
+  }
+}
